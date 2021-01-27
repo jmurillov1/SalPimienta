@@ -83,30 +83,36 @@ int main (int arcg, char *argv[]){
         Mat ventanaGris;
         Mat ventanaRuidoSal;
         Mat ventanaRuidoPimienta;
-        Mat ventanaGaussiano;
-        Mat ventanaBlur;
-        Mat ventanaMediana;
 
-        Mat bordeSobelGris;
-        Mat bordeLaplaceGris;
+        Mat salGaussiano;
+        Mat pimientaGaussiano;
+        Mat salBlur;
+        Mat pimientaBlur;
+        Mat salMediana;
+        Mat pimientaMediana;
 
         namedWindow("Video Original", WINDOW_AUTOSIZE);
         namedWindow("Video Original Gris", WINDOW_AUTOSIZE);
-        namedWindow("Video Sal", WINDOW_AUTOSIZE);
-        namedWindow("Video Pimienta", WINDOW_AUTOSIZE);
-        namedWindow("Video Mediana", WINDOW_AUTOSIZE);
-        namedWindow("Video Blur", WINDOW_AUTOSIZE);
-        namedWindow("Video Gaussiano", WINDOW_AUTOSIZE);
 
-        namedWindow("Bordes Sobel Gris", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Laplacianos Gris", WINDOW_AUTOSIZE);
+        namedWindow("Video Gaussiano Sal", WINDOW_AUTOSIZE);
+        namedWindow("Video Gaussiano Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Video Blur Sal", WINDOW_AUTOSIZE);
+        namedWindow("Video Blur Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Video Mediana Sal", WINDOW_AUTOSIZE);
+        namedWindow("Video Mediana Pimienta", WINDOW_AUTOSIZE);
 
-        namedWindow("Bordes Sobel Gaussiano", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Laplacianos Gaussiano", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Sobel Blur", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Laplacianos Blur", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Sobel Mediana", WINDOW_AUTOSIZE);
-        namedWindow("Bordes Laplacianos Mediana", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Gaussiano Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Gaussiano Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Gaussiano Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Gaussiano Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Blur Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Blur Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Blur Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Blur Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Mediana Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Mediana Sal", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Sobel Mediana Pimienta", WINDOW_AUTOSIZE);
+        namedWindow("Bordes Laplacianos Mediana Pimienta", WINDOW_AUTOSIZE);
 
         while(3==3){
             //Asignamos el video a una ventana
@@ -122,16 +128,15 @@ int main (int arcg, char *argv[]){
             //Ruido Pimienta
             ventanaRuidoPimienta = SalPimienta(ventanaGris, pimienta, 0);
 
-            ventanaGaussiano = Filtro(ventanaGris,fgaussiano,1);
-            ventanaBlur= Filtro(ventanaGris, fblur,2);
-            ventanaMediana = Filtro(ventanaGris, fmediana,3);
+            //Filtros SAL y PIMIENTA
+            Mat salGaussiano = Filtro(ventanaRuidoSal,fgaussiano,1);
+            Mat pimientaGaussiano = Filtro(ventanaRuidoPimienta,fgaussiano,1);
+            Mat salBlur = Filtro(ventanaRuidoSal, fblur,2);
+            Mat pimientaBlur = Filtro(ventanaRuidoPimienta, fblur,2);
+            Mat salMediana = Filtro(ventanaRuidoSal, fmediana,3);
+            Mat pimientaMediana = Filtro(ventanaRuidoPimienta, fmediana,3);
 
-            //Bordes de Laplace
-            bordeLaplaceGris = BordesLaplace(ventanaGris);
-
-            //Bordes de Sobel
-            bordeSobelGris = BordesSobel(ventanaGris);
-
+            // Creaci´on de los Trackbar Necesarios
             createTrackbar("Sal","Video Original",&sal, 100, functionTrackbar, NULL);
             createTrackbar("Pimienta","Video Original",&pimienta, 100, functionTrackbar, NULL);
             createTrackbar("Mediana","Video Original",&fmediana, 100, functionTrackbar, NULL);
@@ -141,22 +146,32 @@ int main (int arcg, char *argv[]){
             //Mostramos los resultados
             imshow("Video Original",ventana);
             imshow("Video Original Gris",ventanaGris);
-            imshow("Video Sal",ventanaRuidoSal);
-            imshow("Video Pimienta",ventanaRuidoPimienta);
-            imshow("Video Mediana",ventanaMediana);
-            imshow("Video Blur",ventanaBlur);
-            imshow("Video Gaussiano",ventanaGaussiano);
 
-            imshow("Bordes Sobel Gris", bordeLaplaceGris);
-            imshow("Bordes Laplacianos Gris", bordeSobelGris);
-
-            imshow("Bordes Sobel Gaussiano", BordesSobel(ventanaGaussiano));
-            imshow("Bordes Laplacianos Gaussiano", BordesLaplace(ventanaGaussiano));
-            imshow("Bordes Sobel Blur", BordesSobel(ventanaBlur));
-            imshow("Bordes Laplacianos Blur", BordesLaplace(ventanaBlur));
-            imshow("Bordes Sobel Mediana", BordesSobel(ventanaMediana));
-            imshow("Bordes Laplacianos Mediana", BordesLaplace(ventanaMediana));
-
+            //Mostramos los filtros
+            imshow("Video Gaussiano Sal", salGaussiano);
+            imshow("Video Gaussiano Pimienta", pimientaGaussiano);
+            imshow("Video Blur Sal", salBlur);
+            imshow("Video Blur Pimienta", pimientaBlur);
+            imshow("Video Mediana Sal", salMediana);
+            imshow("Video Mediana Pimienta", pimientaMediana);
+            
+            // Mostramos los Bordes
+            imshow("Bordes Sobel Gaussiano Sal", BordesSobel(salGaussiano));
+            imshow("Bordes Laplacianos Gaussiano Sal", BordesLaplace(salGaussiano));
+            imshow("Bordes Sobel Gaussiano Pimienta", BordesSobel(pimientaGaussiano));
+            imshow("Bordes Laplacianos Gaussiano Pimienta", BordesLaplace(pimientaGaussiano));
+            imshow("Bordes Sobel Blur Sal", BordesSobel(salBlur));
+            imshow("Bordes Laplacianos Blur Sal", BordesLaplace(salBlur));
+            imshow("Bordes Sobel Blur Pimienta", BordesSobel(pimientaBlur));
+            imshow("Bordes Laplacianos Blur Pimienta", BordesLaplace(pimientaBlur));
+            imshow("Bordes Sobel Mediana Sal", BordesSobel(salMediana));
+            imshow("Bordes Laplacianos Mediana Sal", BordesLaplace(salMediana));
+            imshow("Bordes Sobel Mediana Pimienta", BordesSobel(pimientaMediana));
+            imshow("Bordes Laplacianos Mediana Pimienta", BordesLaplace(pimientaMediana));
+            
+            if(ventana.rows == 0 || ventana.cols == 0)
+                break;
+            
             if(waitKey(23)==27)
                 break;
         }
